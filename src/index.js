@@ -7,9 +7,60 @@ import mapboxgl from '!mapbox-gl';
 import { useRef, useEffect, useState } from 'react';
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-const Map = ({containerRef, isTop, map, opacity, startCoords}) => {
-	const [lat, setLat] = useState(startCoords[0]);
-	const [lng, setLng] = useState(startCoords[1]);
+// create a function to make a directions request
+async function getRoute(map, start, end) {
+	// make a directions request using cycling profile
+	// an arbitrary start will always be the same
+	// only the end or destination will change
+	console.log(`https://api.mapbox.com/directions/v5/mapbox/cycling/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`);
+	try {
+		const query = await fetch(
+			`https://api.mapbox.com/directions/v5/mapbox/cycling/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+			{ method: 'GET' }
+		);
+		const json = await query.json();
+		const data = json.routes[0];
+		const route = data.geometry.coordinates;
+		const geojson = {
+			type: 'Feature',
+			properties: {},
+			geometry: {
+				type: 'LineString',
+				coordinates: route
+			}
+		};
+		// if the route already exists on the map, we'll reset it using setData
+		if (map.getSource('route')) {
+			map.getSource('route').setData(geojson);
+		}
+		// otherwise, we'll make a new request
+		else {
+			map.addLayer({
+				id: 'route',
+				type: 'line',
+				source: {
+					type: 'geojson',
+					data: geojson
+				},
+				layout: {
+					'line-join': 'round',
+					'line-cap': 'round'
+				},
+				paint: {
+					'line-color': '#3887be',
+					'line-width': 5,
+					'line-opacity': 0.75
+				}
+			});
+		}
+	} catch(err) {
+		console.log(err.message);
+	}
+}
+
+const Map = ({containerRef, isTop, map, opacity, startCoords, end}) => {
+	const [lat, setLat] = useState(startCoords.lat);
+	const [lng, setLng] = useState(startCoords.lng);
 	const [zoom, setZoom] = useState(14);
 
 	useEffect(() => {
@@ -19,6 +70,13 @@ const Map = ({containerRef, isTop, map, opacity, startCoords}) => {
 			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [lng, lat],
 			zoom: zoom
+		});
+		console.log(map);
+		map.current.on('load', () => {
+			// make an initial directions request that
+			// starts and ends at the same location
+			getRoute(map, [lng, lat], [end.lng, end.lat]);
+
 		});
 	});
 
@@ -70,8 +128,16 @@ const App = () => {
 	const [mapOneOpacity, setOneOpacity] = useState(100);
 	const [mapTwoOpacity, setTwoOpacity] = useState(100);
 	const [overlayMaps, setOverlayMaps] = useState(false);
-	const startCoordinatesOne = [45.53652083427686, -122.64854260371082];
-	const startCoordinatesTwo = [-37.80131284816989, 144.99433483493962];
+	const startCoordinatesOne = {lng: -122.66018766144089, lat: 45.53569721887533};
+	const startCoordinatesTwo = {lng: 144.99433483493962, lat: -37.80131284816989};
+	const routeOne = {
+		start: {lng: -122.66018766144089, lat: 45.53569721887533},
+		end: {lng: -122.6393532809991, lat:45.534889398275084},
+	};
+	const routeTwo = {
+		start: {lng: 144.99408459362985, lat: -37.801012846814096},
+		end: {lng: 144.99834315169755, lat: -37.81027946175521},
+	};
 	// const zoom = 12;
 	// const [zoom, setZoom] = useState(9);
 
@@ -144,7 +210,8 @@ const App = () => {
 					isTop={mapOneIsTop}
 					map={mapOneRef}
 					opacity={mapOneOpacity}
-					startCoords={startCoordinatesOne}
+					startCoords={routeOne.start}
+					end={routeOne.end}
 				/>
 				<Map
 					containerRef={mapContainerTwo}
@@ -152,7 +219,8 @@ const App = () => {
 					isTop={!mapOneIsTop}
 					map={mapTwoRef}
 					opacity={mapTwoOpacity}
-					startCoords={startCoordinatesTwo}
+					startCoords={routeTwo.start}
+					end={routeTwo.end}
 				/>
 			</div>
 		</div>
