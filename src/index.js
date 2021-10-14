@@ -69,6 +69,7 @@ const App = () => {
 	const [mapOneIsTop, setMapOneIsTop] = useState(true);
 	const [mapOneOpacity, setOneOpacity] = useState(100);
 	const [mapTwoOpacity, setTwoOpacity] = useState(100);
+	const [overlayMaps, setOverlayMaps] = useState(false);
 	const startCoordinatesOne = [45.53652083427686, -122.64854260371082];
 	const startCoordinatesTwo = [-37.80131284816989, 144.99433483493962];
 	// const zoom = 12;
@@ -113,27 +114,30 @@ const App = () => {
 	const setTopTwo = () => setMapOneIsTop(false);
 	const handleRangeOne = (e) => setOneOpacity(e.target.value);
 	const handleRangeTwo = (e) => setTwoOpacity(e.target.value);
-
+	const toggleOverlayMode = () => setOverlayMaps(s => !s);
 
 	return (
 		<div>
-			<h2>Hi there!</h2>
-			<form>
+			<h2>Map x Map</h2>
+			<div>
 				<h3>Opacity:</h3>
 				<OpacityRange name='Map 1' value={mapOneOpacity} onChange={handleRangeOne}/>
 				<OpacityRange name='Map 2' value={mapTwoOpacity} onChange={handleRangeTwo}/>
-				<h3>Top Layer:</h3>
-				<div>
-					<TopRadio map={mapOneIsTop} name="Map 1" onChange={setTopOne}/>
-					<TopRadio map={!mapOneIsTop} name="Map 2" onChange={setTopTwo}/>
-				</div>
-
-			</form>
+				<h3>Overlay Maps:</h3>
+				<button className={overlayMaps ? 'on' : 'off'} onClick={toggleOverlayMode}>{overlayMaps ? 'Off' : 'On'}</button>
+				{overlayMaps ? (
+					<div>
+						<TopRadio map={mapOneIsTop} name="Map 1" onChange={setTopOne}/>
+						<TopRadio map={!mapOneIsTop} name="Map 2" onChange={setTopTwo}/>
+					</div>
+				) : null
+				}
+			</div>
 			{/*<div className="sidebar">*/}
 			{/*  Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}*/}
 			{/*</div>*/}
 
-			<div>
+			<div className={`maps-holder ${overlayMaps ? 'overlay' : ''}`}>
 				<Map
 					containerRef={mapContainerOne}
 					isSelected={false}
