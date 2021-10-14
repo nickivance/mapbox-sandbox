@@ -101,20 +101,18 @@ const Map = ({containerRef, isTop, map, opacity, startCoords, end}) => {
 	);
 };
 
-const OpacityRange = ({name, value, onChange}) => {
+const OpacityRange = ({value, onChange}) => {
 	return (
-		<div>
-			<label>{name}{' '}
-				<input type='range' onChange={onChange} step={5} value={value}/>
-				<span>{value}</span>
-			</label>
-		</div>
+		<label>
+			<input type='range' onChange={onChange} step={5} value={value}/>
+			<span>{value}%</span>
+		</label>
 	);
 };
 
-const TopRadio = ({map, name, onChange}) => {
+const TopRadio = ({map, onChange}) => {
 	return (
-		<label><input checked={map} onChange={onChange} type='radio'/> {name}</label>
+		<input checked={map} onChange={onChange} type='radio'/>
 	);
 };
 
@@ -185,20 +183,35 @@ const App = () => {
 	return (
 		<div>
 			<h2>Map x Map</h2>
-			<div>
-				<h3>Opacity:</h3>
-				<OpacityRange name='Map 1' value={mapOneOpacity} onChange={handleRangeOne}/>
-				<OpacityRange name='Map 2' value={mapTwoOpacity} onChange={handleRangeTwo}/>
-				<h3>Overlay Maps:</h3>
-				<button className={overlayMaps ? 'on' : 'off'} onClick={toggleOverlayMode}>{overlayMaps ? 'Off' : 'On'}</button>
-				{overlayMaps ? (
-					<div>
-						<TopRadio map={mapOneIsTop} name="Map 1" onChange={setTopOne}/>
-						<TopRadio map={!mapOneIsTop} name="Map 2" onChange={setTopTwo}/>
-					</div>
-				) : null
-				}
-			</div>
+			<button className={overlayMaps ? 'Off' : 'On'} onClick={toggleOverlayMode}>{overlayMaps ? 'Show Side-by-Side' : 'Overlay Maps'}</button>
+			{/*todo: call a resize on canvas when maps are overlaid so they fill the full width*/}
+			{overlayMaps ? (
+				<table>
+					<thead>
+						<tr>
+							<th>Top</th>
+							<th>Map</th>
+							<th>Opacity</th>
+							<th>Center</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><TopRadio map={mapOneIsTop} onChange={setTopOne}/></td>
+							<td>PDX</td>
+							<td><OpacityRange value={mapOneOpacity} onChange={handleRangeOne}/></td>
+							<td>tbd</td>
+						</tr>
+						<tr>
+							<td><TopRadio map={!mapOneIsTop} onChange={setTopTwo}/></td>
+							<td>Melbourne</td>
+							<td><OpacityRange value={mapTwoOpacity} onChange={handleRangeTwo}/></td>
+							<td>tbd</td>
+						</tr>
+					</tbody>
+				</table>
+			) : null
+			}
 			{/*<div className="sidebar">*/}
 			{/*  Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}*/}
 			{/*</div>*/}
