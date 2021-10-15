@@ -190,36 +190,30 @@ const App = () => {
 			<h2>Map x Map</h2>
 			<button className={overlayMaps ? 'Off' : 'On'} onClick={toggleOverlayMode}>{overlayMaps ? 'Show Side-by-Side' : 'Overlay Maps'}</button>
 			{/*todo: call a resize on canvas when maps are overlaid so they fill the full width*/}
-			{overlayMaps ? (
-				<table>
-					<thead>
-						<tr>
-							<th>Top</th>
-							<th>Map</th>
-							<th>Opacity</th>
-							<th>Center</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><TopRadio map={mapOneIsTop} onChange={setTopOne}/></td>
-							<td>PDX</td>
-							<td><OpacityRange value={mapOneOpacity} onChange={handleRangeOne}/></td>
-							<td>tbd</td>
-						</tr>
-						<tr>
-							<td><TopRadio map={!mapOneIsTop} onChange={setTopTwo}/></td>
-							<td>Melbourne</td>
-							<td><OpacityRange value={mapTwoOpacity} onChange={handleRangeTwo}/></td>
-							<td>tbd</td>
-						</tr>
-					</tbody>
-				</table>
-			) : null
-			}
-			{/*<div className="sidebar">*/}
-			{/*  Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}*/}
-			{/*</div>*/}
+			<table style={overlayMaps? {visibility: 'visible', opacity: '100'} : {visibility: 'hidden', opacity: '0'}}>
+				<thead>
+					<tr>
+						<th>Top</th>
+						<th>Map</th>
+						<th>Opacity</th>
+						<th>Center</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><TopRadio map={mapOneIsTop} onChange={setTopOne}/></td>
+						<td>PDX</td>
+						<td><OpacityRange value={mapOneOpacity} onChange={handleRangeOne}/></td>
+						<td>tbd</td>
+					</tr>
+					<tr>
+						<td><TopRadio map={!mapOneIsTop} onChange={setTopTwo}/></td>
+						<td>Melbourne</td>
+						<td><OpacityRange value={mapTwoOpacity} onChange={handleRangeTwo}/></td>
+						<td>tbd</td>
+					</tr>
+				</tbody>
+			</table>
 
 			<div className={`maps-holder ${overlayMaps ? 'overlay' : ''}`}>
 				<div className={`map-container ${mapOneIsTop ? 'top' : ''}`} style={{opacity: `${mapOneOpacity}%`}}>

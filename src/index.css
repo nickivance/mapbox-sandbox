@@ -13,6 +13,7 @@
 
 table {
     text-align: left;
+    transition: opacity .4s ease-in-out, visibility .4s;
 }
 
 .maps-holder {
@@ -21,17 +22,20 @@ table {
     gap: 10px;
 }
 
-.maps-holder.overlay > .top {
-    z-index: 1;
-    /*margin-top: 80px;*/
-}
-
 .maps-holder.overlay > .map-container {
+    border: 2px solid white;
     position: absolute;
     min-width: 100%;
 }
 
+.maps-holder.overlay > .top {
+    z-index: 1;
+    position: relative;
+    top: 30px;
+    left: 30px;
+}
+
 .map-container, .map {
     height: 400px;
-    width: 400px;
+    width: 100%;
 }
