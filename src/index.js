@@ -121,8 +121,6 @@ const App = () => {
 	const [mapOneOpacity, setOneOpacity] = useState(100);
 	const [mapTwoOpacity, setTwoOpacity] = useState(100);
 	const [overlayMaps, setOverlayMaps] = useState(false);
-	const startCoordinatesOne = {lng: -122.66018766144089, lat: 45.53569721887533};
-	const startCoordinatesTwo = {lng: 144.99433483493962, lat: -37.80131284816989};
 	const pdxRoute = {
 		start: {lng: -122.66018766144089, lat: 45.53569721887533},
 		end: {lng: -122.6393532809991, lat:45.534889398275084},
@@ -219,7 +217,6 @@ const App = () => {
 				<div className={`map-container ${mapOneIsTop ? 'top' : ''}`} style={{opacity: `${mapOneOpacity}%`}}>
 					<Map
 						containerRef={mapContainerOne}
-						isSelected={false}
 						mapRef={mapOneRef}
 						startCoords={routeOne.start}
 						end={routeOne.end}
@@ -228,7 +225,6 @@ const App = () => {
 				<div className={`map-container ${mapOneIsTop ? '' : 'top'}`} style={{opacity: `${mapTwoOpacity}%`}}>
 					<Map
 						containerRef={mapContainerTwo}
-						isSelected={false}
 						mapRef={mapTwoRef}
 						startCoords={routeTwo.start}
 						end={routeTwo.end}
