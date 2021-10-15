@@ -56,7 +56,7 @@ async function getRoute(map, start, end) {
 	}
 }
 
-const Map = ({containerRef, isTop, mapRef, opacity, startCoords, end}) => {
+const Map = ({containerRef, mapRef, startCoords, end}) => {
 	const [lat, setLat] = useState(startCoords.lat);
 	const [lng, setLng] = useState(startCoords.lng);
 	const [zoom, setZoom] = useState(14);
@@ -67,6 +67,7 @@ const Map = ({containerRef, isTop, mapRef, opacity, startCoords, end}) => {
 			container: containerRef.current,
 			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [lng, lat],
+			// maxPitch: 10,
 			zoom: zoom
 		});
 		map.on('load', () => {
@@ -88,9 +89,8 @@ const Map = ({containerRef, isTop, mapRef, opacity, startCoords, end}) => {
 		<>
 			{/*<div>{`Latitude: ${lat}, Longitude: ${lng}, Zoom: ${zoom}`}</div>*/}
 			<div
+				className='map'
 				ref={containerRef}
-				className={`map-container ${isTop ? 'top' : ''}`}
-				style={{opacity: `${opacity}%`}}
 			/>
 		</>
 	);
@@ -212,24 +212,24 @@ const App = () => {
 			{/*</div>*/}
 
 			<div className={`maps-holder ${overlayMaps ? 'overlay' : ''}`}>
-				<Map
-					containerRef={mapContainerOne}
-					isSelected={false}
-					isTop={mapOneIsTop}
-					mapRef={mapOneRef}
-					opacity={mapOneOpacity}
-					startCoords={routeOne.start}
-					end={routeOne.end}
-				/>
-				<Map
-					containerRef={mapContainerTwo}
-					isSelected={false}
-					isTop={!mapOneIsTop}
-					mapRef={mapTwoRef}
-					opacity={mapTwoOpacity}
-					startCoords={routeTwo.start}
-					end={routeTwo.end}
-				/>
+				<div className={`map-container ${mapOneIsTop ? 'top' : ''}`} style={{opacity: `${mapOneOpacity}%`}}>
+					<Map
+						containerRef={mapContainerOne}
+						isSelected={false}
+						mapRef={mapOneRef}
+						startCoords={routeOne.start}
+						end={routeOne.end}
+					/>
+				</div>
+				<div className={`map-container ${mapOneIsTop ? '' : 'top'}`} style={{opacity: `${mapTwoOpacity}%`}}>
+					<Map
+						containerRef={mapContainerTwo}
+						isSelected={false}
+						mapRef={mapTwoRef}
+						startCoords={routeTwo.start}
+						end={routeTwo.end}
+					/>
+				</div>
 			</div>
 		</div>
 	);
