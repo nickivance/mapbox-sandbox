@@ -7,12 +7,10 @@ import mapboxgl from '!mapbox-gl';
 import { useRef, useEffect, useState } from 'react';
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-// create a function to make a directions request
 async function getRoute(map, start, end) {
 	// make a directions request using cycling profile
 	// an arbitrary start will always be the same
 	// only the end or destination will change
-	console.log(`https://api.mapbox.com/directions/v5/mapbox/cycling/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`);
 	try {
 		const query = await fetch(
 			`https://api.mapbox.com/directions/v5/mapbox/cycling/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
@@ -58,36 +56,33 @@ async function getRoute(map, start, end) {
 	}
 }
 
-const Map = ({containerRef, isTop, map, opacity, startCoords, end}) => {
+const Map = ({containerRef, isTop, mapRef, opacity, startCoords, end}) => {
 	const [lat, setLat] = useState(startCoords.lat);
 	const [lng, setLng] = useState(startCoords.lng);
 	const [zoom, setZoom] = useState(14);
+	let map = mapRef.current;
 
 	useEffect(() => {
-		if (map.current) return; // initialize map only once
-		map.current = new mapboxgl.Map({
+		map = new mapboxgl.Map({
 			container: containerRef.current,
 			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [lng, lat],
 			zoom: zoom
 		});
-		console.log(map);
-		map.current.on('load', () => {
-			// make an initial directions request that
-			// starts and ends at the same location
+		map.on('load', () => {
 			getRoute(map, [lng, lat], [end.lng, end.lat]);
-
 		});
-	});
+		return () => map.remove();
+	},[]);
 
-	useEffect(() => {
-		if (!map.current) return; // wait for map to initialize
-		map.current.on('move', () => {
-			setLng(map.current.getCenter().lng.toFixed(4));
-			setLat(map.current.getCenter().lat.toFixed(4));
-			setZoom(map.current.getZoom().toFixed(2));
-		});
-	});
+	// useEffect(() => {
+	// 	if (!map) return; // wait for map to initialize
+	// 	map.on('move', () => {
+	// 		setLng(map.getCenter().lng.toFixed(4));
+	// 		setLat(map.getCenter().lat.toFixed(4));
+	// 		setZoom(map.getZoom().toFixed(2));
+	// 	});
+	// });
 
 	return (
 		<>
@@ -221,7 +216,7 @@ const App = () => {
 					containerRef={mapContainerOne}
 					isSelected={false}
 					isTop={mapOneIsTop}
-					map={mapOneRef}
+					mapRef={mapOneRef}
 					opacity={mapOneOpacity}
 					startCoords={routeOne.start}
 					end={routeOne.end}
@@ -230,7 +225,7 @@ const App = () => {
 					containerRef={mapContainerTwo}
 					isSelected={false}
 					isTop={!mapOneIsTop}
-					map={mapTwoRef}
+					mapRef={mapTwoRef}
 					opacity={mapTwoOpacity}
 					startCoords={routeTwo.start}
 					end={routeTwo.end}
