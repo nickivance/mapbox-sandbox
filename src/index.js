@@ -194,7 +194,6 @@ const App = () => {
 						<th>Top</th>
 						<th>Map</th>
 						<th>Opacity</th>
-						<th>Center</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -202,13 +201,11 @@ const App = () => {
 						<td><TopRadio map={mapOneIsTop} onChange={setTopOne}/></td>
 						<td>PDX</td>
 						<td><OpacityRange value={mapOneOpacity} onChange={handleRangeOne}/></td>
-						<td>tbd</td>
 					</tr>
 					<tr>
 						<td><TopRadio map={!mapOneIsTop} onChange={setTopTwo}/></td>
 						<td>Melbourne</td>
 						<td><OpacityRange value={mapTwoOpacity} onChange={handleRangeTwo}/></td>
-						<td>tbd</td>
 					</tr>
 				</tbody>
 			</table>
