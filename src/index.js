@@ -123,13 +123,23 @@ const App = () => {
 	const [overlayMaps, setOverlayMaps] = useState(false);
 	const startCoordinatesOne = {lng: -122.66018766144089, lat: 45.53569721887533};
 	const startCoordinatesTwo = {lng: 144.99433483493962, lat: -37.80131284816989};
-	const routeOne = {
+	const pdxRoute = {
 		start: {lng: -122.66018766144089, lat: 45.53569721887533},
 		end: {lng: -122.6393532809991, lat:45.534889398275084},
 	};
-	const routeTwo = {
+	const melbourneRoute = {
 		start: {lng: 144.99408459362985, lat: -37.801012846814096},
 		end: {lng: 144.99834315169755, lat: -37.81027946175521},
+	};
+	const routeOne = {
+		name: 'Manhattan',
+		start: {lng: -74.00818455221071, lat: 40.73947932824632},
+		end: {lng: -74.00297706950107, lat: 40.75598880738815},
+	};
+	const routeTwo = {
+		name: 'Galiano',
+		start: {lng: -123.33245808114924, lat: 48.87319860160838},
+		end: {lng: -123.39115143749927, lat: 48.893034528773654},
 	};
 	// const zoom = 12;
 	// const [zoom, setZoom] = useState(9);
