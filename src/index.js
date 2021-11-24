@@ -56,18 +56,19 @@ async function getRoute(map, start, end) {
 	}
 }
 
-const Map = ({containerRef, mapRef, startCoords, end}) => {
+const Map = ({containerRef, mapRef, startCoords, end, zoom}) => {
 	const [lat, setLat] = useState(startCoords.lat);
 	const [lng, setLng] = useState(startCoords.lng);
-	const [zoom, setZoom] = useState(14);
+	// const [zoom, setZoom] = useState(14);
 	let map = mapRef.current;
 
 	useEffect(() => {
 		map = new mapboxgl.Map({
 			container: containerRef.current,
-			style: 'mapbox://styles/mapbox/streets-v11',
+			style: 'mapbox://styles/mapbox/dark-v10',
 			center: [lng, lat],
 			// maxPitch: 10,
+			pitchWithRotate: false,
 			zoom: zoom
 		});
 		map.on('load', () => {
@@ -217,6 +218,7 @@ const App = () => {
 						mapRef={mapOneRef}
 						startCoords={routeOne.start}
 						end={routeOne.end}
+						zoom={10}
 					/>
 				</div>
 				<div className={`map-container ${mapOneIsTop ? '' : 'top'}`} style={{opacity: `${mapTwoOpacity}%`}}>
@@ -225,6 +227,7 @@ const App = () => {
 						mapRef={mapTwoRef}
 						startCoords={routeTwo.start}
 						end={routeTwo.end}
+						zoom={10}
 					/>
 				</div>
 			</div>
